@@ -1,0 +1,139 @@
+.home-gallery {
+  padding: 100px 24px;
+  background: #f7f3ee;
+}
+
+.home-gallery-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 50px;
+}
+
+.home-gallery-label {
+  display: inline-block;
+  background: #b22222;
+  color: white;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  margin-bottom: 15px;
+}
+
+.home-gallery-header h2 {
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  color: #4a3128;
+  margin-bottom: 15px;
+}
+
+.home-gallery-header p {
+  color: #7b6b62;
+  line-height: 1.7;
+}
+
+.home-gallery-scroll {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 10px;
+}
+
+.home-gallery-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.home-gallery-scroll::-webkit-scrollbar-thumb {
+  background: #b22222;
+  border-radius: 999px;
+}
+
+.home-gallery-card {
+  min-width: 320px;
+  max-width: 320px;
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(0,0,0,.08);
+  transition: .3s;
+}
+
+.home-gallery-card:hover {
+  transform: translateY(-8px);
+}
+
+.home-gallery-image {
+  position: relative;
+  width: 100%;
+  height: 320px;
+}
+
+.home-gallery-content {
+  padding: 20px;
+}
+
+.home-gallery-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.home-gallery-category {
+  background: #b22222;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: .8rem;
+}
+
+.home-gallery-featured {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #f4b400;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: .8rem;
+}
+
+.home-gallery-content h3 {
+  color: #4a3128;
+  font-size: 1.2rem;
+}
+
+.home-gallery-footer {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.home-gallery-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #b22222;
+  color: white;
+  padding: 16px 28px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.home-gallery-loading {
+  text-align: center;
+  padding: 40px;
+}
+
+@media (max-width: 768px) {
+  .home-gallery {
+    padding: 70px 16px;
+  }
+
+  .home-gallery-card {
+    min-width: 280px;
+    max-width: 280px;
+  }
+
+  .home-gallery-image {
+    height: 260px;
+  }
+}

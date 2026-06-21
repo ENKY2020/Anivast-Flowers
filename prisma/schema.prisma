@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+enum Role {
+  CUSTOMER
+  ADMIN
+  DEVELOPER
+}
+
+enum InquiryStatus {
+  PENDING
+  CONTACTED
+  QUOTED
+  BOOKED
+  COMPLETED
+}
+
+enum EventType {
+  WEDDING
+  BIRTHDAY
+  BABY_SHOWER
+  GRADUATION
+  ANNIVERSARY
+  CORPORATE
+  CUSTOM
+}
+
+enum FlowerCategory {
+  BOUQUET
+  MONEY_BOUQUET
+  SYMPATHY
+  FUNERAL
+  ARTIFICIAL
+  CENTERPIECE
+}
+
+enum RentalCategory {
+  CHAIRS
+  TABLES
+  TENTS
+  BACKDROPS
+  LIGHTING
+  MOBILE_TOILETS
+  RED_CARPETS
+  BOUNCING_CASTLES
+}

@@ -1,0 +1,23 @@
+:root {
+  --bg-primary: #f7f2eb;
+  --bg-secondary: #fffaf5;
+
+  --gold: #d8b08c;
+  --gold-dark: #b78b5c;
+
+  --accent: #b22222;
+
+  --text-primary: #3e2c23;
+  --text-secondary: #6b5b52;
+
+  --white: #ffffff;
+
+  --success: #25d366;
+
+  --shadow:
+    0 10px 30px rgba(0, 0, 0, 0.08);
+
+  --radius: 20px;
+
+  --container: 1200px;
+}

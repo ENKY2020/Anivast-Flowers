@@ -1,0 +1,89 @@
+.quick-actions {
+  max-width: 1200px;
+  margin: -30px auto 60px;
+  padding: 0 24px;
+  position: relative;
+  z-index: 10;
+}
+
+.quick-actions-container {
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 24px;
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+}
+
+.quick-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-decoration: none;
+  color: inherit;
+
+  padding: 18px 10px;
+  border-radius: 18px;
+
+  transition: all 0.3s ease;
+}
+
+.quick-action:hover {
+  background: #faf6f1;
+  transform: translateY(-3px);
+}
+
+.quick-action-icon {
+  width: 64px;
+  height: 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f7f3ee;
+  border-radius: 18px;
+
+  margin-bottom: 10px;
+
+  color: #8b5e3c;
+
+  transition: all 0.3s ease;
+}
+
+.quick-action:hover .quick-action-icon {
+  background: #b22222;
+  color: white;
+}
+
+.quick-action span {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #4a3128;
+}
+
+@media (max-width: 768px) {
+  .quick-actions {
+    margin-top: -20px;
+    padding: 0 16px;
+  }
+
+  .quick-actions-container {
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .quick-action-icon {
+    width: 52px;
+    height: 52px;
+  }
+
+  .quick-action span {
+    font-size: 0.8rem;
+  }
+}

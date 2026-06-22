@@ -8,6 +8,7 @@ import {
   Gift,
   X,
 } from "lucide-react";
+
 import PackageForm from "../PackageForm";
 import { supabase } from "@/lib/supabase";
 
@@ -16,7 +17,8 @@ interface Package {
   name: string;
   category: string;
   price: number;
-  image_url: string;
+  image_url?: string;
+  description?: string;
   featured: boolean;
   active: boolean;
 }
@@ -24,6 +26,9 @@ interface Package {
 export default function PackagesAdminPage() {
   const [showForm, setShowForm] =
     useState(false);
+
+  const [selectedPackage, setSelectedPackage] =
+    useState<Package | null>(null);
 
   const [packages, setPackages] =
     useState<Package[]>([]);
@@ -76,7 +81,24 @@ export default function PackagesAdminPage() {
       return;
     }
 
-    loadPackages();
+    await loadPackages();
+  }
+
+  function openCreateModal() {
+    setSelectedPackage(null);
+    setShowForm(true);
+  }
+
+  function openEditModal(
+    pkg: Package
+  ) {
+    setSelectedPackage(pkg);
+    setShowForm(true);
+  }
+
+  function closeModal() {
+    setSelectedPackage(null);
+    setShowForm(false);
   }
 
   return (
@@ -97,9 +119,7 @@ export default function PackagesAdminPage() {
 
         <button
           className="admin-add-btn"
-          onClick={() =>
-            setShowForm(true)
-          }
+          onClick={openCreateModal}
         >
           <Plus size={18} />
           Add Package
@@ -111,15 +131,15 @@ export default function PackagesAdminPage() {
           <div className="admin-modal">
             <div className="admin-modal-header">
               <h2>
-                Package Form Coming Next
+                {selectedPackage
+                  ? "Edit Package"
+                  : "Create Package"}
               </h2>
 
               <button
                 type="button"
                 className="admin-close-btn"
-                onClick={() =>
-                  setShowForm(false)
-                }
+                onClick={closeModal}
               >
                 <X size={20} />
               </button>
@@ -128,10 +148,17 @@ export default function PackagesAdminPage() {
             <div
               style={{
                 padding: "2rem",
-                textAlign: "center",
               }}
             >
-            <PackageForm />
+              <PackageForm
+                packageData={
+                  selectedPackage
+                }
+                onSuccess={() => {
+                  closeModal();
+                  loadPackages();
+                }}
+              />
             </div>
           </div>
         </div>
@@ -256,6 +283,11 @@ export default function PackagesAdminPage() {
                         <button
                           type="button"
                           title="Edit"
+                          onClick={() =>
+                            openEditModal(
+                              pkg
+                            )
+                          }
                         >
                           <Pencil
                             size={18}

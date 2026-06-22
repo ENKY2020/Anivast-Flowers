@@ -3,49 +3,105 @@
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 
-const DEFAULT_CATEGORIES = [
-  "Bouquet",
-  "Premium Bouquet",
+const FLOWER_CATEGORIES = [
   "Rose Bouquet",
   "Lily Bouquet",
   "Money Bouquet",
-  "Basket Arrangement",
-  "Gift Bouquet",
+  "Snack Bouquet",
+  "Luxury Bouquet",
+  "Artificial Flowers",
+  "Funeral Flowers",
   "Custom",
 ];
 
-export default function FlowerForm() {
-  const [loading, setLoading] = useState(false);
+interface FlowerData {
+  id?: string;
+  name: string;
+  category: string;
+  price: number;
+  description?: string;
+  image_url?: string;
+  featured?: boolean;
+  active?: boolean;
+  seasonal?: boolean;
+}
 
-  const [name, setName] = useState("");
+interface FlowerFormProps {
+  flowerData?: FlowerData | null;
+  onSuccess?: () => void;
+}
+
+export default function FlowerForm({
+  flowerData = null,
+  onSuccess,
+}: FlowerFormProps) {
+  const [loading, setLoading] =
+    useState(false);
+
+  const [name, setName] =
+    useState(
+      flowerData?.name || ""
+    );
+
   const [category, setCategory] =
-    useState("Bouquet");
+    useState(
+      flowerData?.category ||
+        "Rose Bouquet"
+    );
 
-  const [customCategory, setCustomCategory] =
-    useState("");
+  const [
+    customCategory,
+    setCustomCategory,
+  ] = useState("");
 
-  const [price, setPrice] = useState("");
+  const [price, setPrice] =
+    useState(
+      flowerData?.price
+        ? String(
+            flowerData.price
+          )
+        : ""
+    );
 
-  const [description, setDescription] =
-    useState("");
+  const [
+    description,
+    setDescription,
+  ] = useState(
+    flowerData?.description ||
+      ""
+  );
 
   const [featured, setFeatured] =
-    useState(false);
+    useState(
+      flowerData?.featured ??
+        false
+    );
 
   const [active, setActive] =
-    useState(true);
+    useState(
+      flowerData?.active ??
+        true
+    );
 
   const [seasonal, setSeasonal] =
-    useState(false);
+    useState(
+      flowerData?.seasonal ??
+        false
+    );
 
   const [imageFile, setImageFile] =
     useState<File | null>(null);
 
-  const createSlug = (text: string) =>
+  const createSlug = (
+    text: string
+  ) =>
     text
       .toLowerCase()
       .trim()
-      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(
+        /[^a-z0-9\s-]/g,
+        ""
+      )
       .replace(/\s+/g, "-");
 
   async function handleSubmit(
@@ -61,18 +117,25 @@ export default function FlowerForm() {
           ? customCategory
           : category;
 
-      const slug = createSlug(name);
+      const slug =
+        createSlug(name);
 
-      let imageUrl = "";
+      let imageUrl =
+        flowerData?.image_url ||
+        "";
 
       if (imageFile) {
         const fileName =
           `${Date.now()}-${imageFile.name}`;
 
-        const { error: uploadError } =
-          await supabase.storage
-            .from("flowers")
-            .upload(fileName, imageFile);
+        const {
+          error: uploadError,
+        } = await supabase.storage
+          .from("flowers")
+          .upload(
+            fileName,
+            imageFile
+          );
 
         if (uploadError)
           throw uploadError;
@@ -80,48 +143,76 @@ export default function FlowerForm() {
         const { data } =
           supabase.storage
             .from("flowers")
-            .getPublicUrl(fileName);
+            .getPublicUrl(
+              fileName
+            );
 
         imageUrl =
           data.publicUrl;
       }
 
-      const { error } =
-        await supabase
-          .from("flowers")
-          .insert([
-            {
-              name,
-              slug,
-              category:
-                finalCategory,
-              price:
-                Number(price),
-              description,
-              image_url:
-                imageUrl,
-              featured,
-              active,
-              seasonal,
-            },
-          ]);
+      const payload = {
+        name,
+        slug,
+        category:
+          finalCategory,
+        price:
+          Number(price),
+        description,
+        image_url:
+          imageUrl,
+        featured,
+        active,
+        seasonal,
+      };
 
-      if (error) throw error;
+      if (flowerData?.id) {
+        const { error } =
+          await supabase
+            .from("flowers")
+            .update(payload)
+            .eq(
+              "id",
+              flowerData.id
+            );
 
-      alert(
-        "Flower added successfully 🌹"
-      );
+        if (error)
+          throw error;
+
+        alert(
+          "Flower updated successfully 🌹"
+        );
+      } else {
+        const { error } =
+          await supabase
+            .from("flowers")
+            .insert([
+              payload,
+            ]);
+
+        if (error)
+          throw error;
+
+        alert(
+          "Flower added successfully 🌹"
+        );
+      }
+
+      if (onSuccess) {
+        onSuccess();
+        return;
+      }
 
       setName("");
-      setCategory("Bouquet");
+      setCategory(
+        "Rose Bouquet"
+      );
       setCustomCategory("");
       setPrice("");
       setDescription("");
-
       setFeatured(false);
-      setSeasonal(false);
       setActive(true);
-
+      setSeasonal(false);
       setImageFile(null);
     } catch (error) {
       console.error(error);
@@ -139,7 +230,11 @@ export default function FlowerForm() {
       className="admin-form"
       onSubmit={handleSubmit}
     >
-      <h2>Add New Flower</h2>
+      <h2>
+        {flowerData
+          ? "Edit Flower"
+          : "Add New Flower"}
+      </h2>
 
       <div className="form-group">
         <label>
@@ -171,7 +266,7 @@ export default function FlowerForm() {
             )
           }
         >
-          {DEFAULT_CATEGORIES.map(
+          {FLOWER_CATEGORIES.map(
             (cat) => (
               <option
                 key={cat}
@@ -229,10 +324,8 @@ export default function FlowerForm() {
         </label>
 
         <textarea
-          rows={4}
-          value={
-            description
-          }
+          rows={5}
+          value={description}
           onChange={(e) =>
             setDescription(
               e.target.value
@@ -261,28 +354,12 @@ export default function FlowerForm() {
 
       <div
         style={{
-          display: "grid",
-          gap: "0.75rem",
+          display: "flex",
+          gap: "1.5rem",
           marginBottom: "1rem",
+          flexWrap: "wrap",
         }}
       >
-        <label>
-          <input
-            type="checkbox"
-            checked={
-              active
-            }
-            onChange={(e) =>
-              setActive(
-                e.target.checked
-              )
-            }
-          />{" "}
-          Active
-          (show in Flowers
-          catalog)
-        </label>
-
         <label>
           <input
             type="checkbox"
@@ -291,31 +368,40 @@ export default function FlowerForm() {
             }
             onChange={(e) =>
               setFeatured(
-                e.target.checked
+                e.target
+                  .checked
               )
             }
           />{" "}
           Featured
-          (homepage featured
-          flowers)
         </label>
 
         <label>
           <input
             type="checkbox"
-            checked={
-              seasonal
-            }
+            checked={seasonal}
             onChange={(e) =>
               setSeasonal(
-                e.target.checked
+                e.target
+                  .checked
               )
             }
           />{" "}
-          Seasonal Offer
-          (Valentine,
-          Mother's Day,
-          Christmas, etc.)
+          Seasonal
+        </label>
+
+        <label>
+          <input
+            type="checkbox"
+            checked={active}
+            onChange={(e) =>
+              setActive(
+                e.target
+                  .checked
+              )
+            }
+          />{" "}
+          Active
         </label>
       </div>
 
@@ -325,7 +411,9 @@ export default function FlowerForm() {
         className="admin-submit-btn"
       >
         {loading
-          ? "Uploading..."
+          ? "Saving..."
+          : flowerData
+          ? "Update Flower"
           : "Save Flower"}
       </button>
     </form>

@@ -13,11 +13,12 @@ import FlowerForm from "../FlowerForm";
 import { supabase } from "@/lib/supabase";
 
 interface Flower {
-  id: string | number;
+  id: string;
   name: string;
   category: string;
   price: number;
-  image_url: string;
+  description?: string;
+  image_url?: string;
   featured: boolean;
   active: boolean;
   seasonal?: boolean;
@@ -26,6 +27,9 @@ interface Flower {
 export default function FlowersAdminPage() {
   const [showForm, setShowForm] =
     useState(false);
+
+  const [selectedFlower, setSelectedFlower] =
+    useState<Flower | null>(null);
 
   const [flowers, setFlowers] =
     useState<Flower[]>([]);
@@ -78,7 +82,24 @@ export default function FlowersAdminPage() {
       return;
     }
 
-    loadFlowers();
+    await loadFlowers();
+  }
+
+  function openCreateModal() {
+    setSelectedFlower(null);
+    setShowForm(true);
+  }
+
+  function openEditModal(
+    flower: Flower
+  ) {
+    setSelectedFlower(flower);
+    setShowForm(true);
+  }
+
+  function closeModal() {
+    setSelectedFlower(null);
+    setShowForm(false);
   }
 
   return (
@@ -99,8 +120,8 @@ export default function FlowersAdminPage() {
 
         <button
           className="admin-add-btn"
-          onClick={() =>
-            setShowForm(true)
+          onClick={
+            openCreateModal
           }
         >
           <Plus size={18} />
@@ -113,28 +134,42 @@ export default function FlowersAdminPage() {
           <div className="admin-modal">
             <div className="admin-modal-header">
               <h2>
-                Add New Flower
+                {selectedFlower
+                  ? "Edit Flower"
+                  : "Add New Flower"}
               </h2>
 
               <button
                 type="button"
                 className="admin-close-btn"
-                onClick={() =>
-                  setShowForm(false)
+                onClick={
+                  closeModal
                 }
               >
                 <X size={20} />
               </button>
             </div>
 
-            <FlowerForm />
-
+            <div
+              style={{
+                padding: "2rem",
+              }}
+            >
+              <FlowerForm
+                flowerData={
+                  selectedFlower
+                }
+                onSuccess={() => {
+                  closeModal();
+                  loadFlowers();
+                }}
+              />
+            </div>
           </div>
         </div>
       )}
 
       <div className="admin-table-card">
-
         {loading ? (
           <p>
             Loading flowers...
@@ -154,7 +189,6 @@ export default function FlowersAdminPage() {
             </thead>
 
             <tbody>
-
               {flowers.map(
                 (flower) => (
                   <tr
@@ -164,7 +198,6 @@ export default function FlowersAdminPage() {
                   >
                     <td>
                       <div className="flower-cell">
-
                         {flower.image_url ? (
                           <img
                             src={
@@ -193,7 +226,6 @@ export default function FlowersAdminPage() {
                             flower.name
                           }
                         </span>
-
                       </div>
                     </td>
 
@@ -242,7 +274,7 @@ export default function FlowersAdminPage() {
                             999,
                           background:
                             flower.seasonal
-                              ? "#f59e0b"
+                              ? "#3b82f6"
                               : "#e5e7eb",
                           color:
                             flower.seasonal
@@ -253,7 +285,7 @@ export default function FlowersAdminPage() {
                         }}
                       >
                         {flower.seasonal
-                          ? "Seasonal"
+                          ? "Yes"
                           : "No"}
                       </span>
                     </td>
@@ -283,10 +315,14 @@ export default function FlowersAdminPage() {
 
                     <td>
                       <div className="action-buttons">
-
                         <button
                           type="button"
                           title="Edit"
+                          onClick={() =>
+                            openEditModal(
+                              flower
+                            )
+                          }
                         >
                           <Pencil
                             size={18}
@@ -297,26 +333,23 @@ export default function FlowersAdminPage() {
                           type="button"
                           title="Delete"
                           onClick={() =>
-  deleteFlower(
-    String(flower.id)
-  )
-}
+                            deleteFlower(
+                              flower.id
+                            )
+                          }
                         >
                           <Trash2
                             size={18}
                           />
                         </button>
-
                       </div>
                     </td>
                   </tr>
                 )
               )}
-
             </tbody>
           </table>
         )}
-
       </div>
     </div>
   );

@@ -22,6 +22,7 @@ export default function RentalsAdminPage() {
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  
 
   async function loadRentals() {
     setLoading(true);

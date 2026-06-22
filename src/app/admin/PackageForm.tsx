@@ -13,16 +13,39 @@ const DEFAULT_CATEGORIES = [
   "Custom",
 ];
 
-export default function PackageForm() {
+interface PackageData {
+  id?: string;
+  name: string;
+  slug?: string;
+  category: string;
+  price: number;
+  description?: string;
+  image_url?: string;
+  featured?: boolean;
+  active?: boolean;
+}
+
+interface PackageFormProps {
+  packageData?: PackageData | null;
+  onSuccess?: () => void;
+}
+
+export default function PackageForm({
+  packageData = null,
+  onSuccess,
+}: PackageFormProps) {
   const [loading, setLoading] =
     useState(false);
 
   const [name, setName] =
-    useState("");
+    useState(
+      packageData?.name || ""
+    );
 
   const [category, setCategory] =
     useState(
-      "Wedding Package"
+      packageData?.category ||
+        "Wedding Package"
     );
 
   const [
@@ -31,18 +54,33 @@ export default function PackageForm() {
   ] = useState("");
 
   const [price, setPrice] =
-    useState("");
+    useState(
+      packageData?.price
+        ? String(
+            packageData.price
+          )
+        : ""
+    );
 
   const [
     description,
     setDescription,
-  ] = useState("");
+  ] = useState(
+    packageData?.description ||
+      ""
+  );
 
   const [featured, setFeatured] =
-    useState(false);
+    useState(
+      packageData?.featured ??
+        false
+    );
 
   const [active, setActive] =
-    useState(true);
+    useState(
+      packageData?.active ??
+        true
+    );
 
   const [imageFile, setImageFile] =
     useState<File | null>(null);
@@ -75,7 +113,9 @@ export default function PackageForm() {
       const slug =
         createSlug(name);
 
-      let imageUrl = "";
+      let imageUrl =
+        packageData?.image_url ||
+        "";
 
       if (imageFile) {
         const fileName =
@@ -90,8 +130,9 @@ export default function PackageForm() {
             imageFile
           );
 
-        if (uploadError)
+        if (uploadError) {
           throw uploadError;
+        }
 
         const { data } =
           supabase.storage
@@ -104,31 +145,56 @@ export default function PackageForm() {
           data.publicUrl;
       }
 
-      const { error } =
-        await supabase
-          .from("packages")
-          .insert([
-            {
-              name,
-              slug,
-              category:
-                finalCategory,
-              price:
-                Number(price),
-              description,
-              image_url:
-                imageUrl,
-              featured,
-              active,
-            },
-          ]);
+      const payload = {
+        name,
+        slug,
+        category:
+          finalCategory,
+        price:
+          Number(price),
+        description,
+        image_url:
+          imageUrl,
+        featured,
+        active,
+      };
 
-      if (error)
-        throw error;
+      if (packageData?.id) {
+        const { error } =
+          await supabase
+            .from("packages")
+            .update(payload)
+            .eq(
+              "id",
+              packageData.id
+            );
 
-      alert(
-        "Package saved successfully 🎉"
-      );
+        if (error)
+          throw error;
+
+        alert(
+          "Package updated successfully 🎉"
+        );
+      } else {
+        const { error } =
+          await supabase
+            .from("packages")
+            .insert([
+              payload,
+            ]);
+
+        if (error)
+          throw error;
+
+        alert(
+          "Package created successfully 🎉"
+        );
+      }
+
+      if (onSuccess) {
+        onSuccess();
+        return;
+      }
 
       setName("");
       setCategory(
@@ -157,7 +223,9 @@ export default function PackageForm() {
       onSubmit={handleSubmit}
     >
       <h2>
-        Add New Package
+        {packageData
+          ? "Edit Package"
+          : "Add New Package"}
       </h2>
 
       <div className="form-group">
@@ -217,8 +285,7 @@ export default function PackageForm() {
             }
             onChange={(e) =>
               setCustomCategory(
-                e.target
-                  .value
+                e.target.value
               )
             }
             required
@@ -321,7 +388,9 @@ export default function PackageForm() {
         className="admin-submit-btn"
       >
         {loading
-          ? "Uploading..."
+          ? "Saving..."
+          : packageData
+          ? "Update Package"
           : "Save Package"}
       </button>
     </form>

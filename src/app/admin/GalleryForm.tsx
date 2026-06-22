@@ -1,15 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
+interface GalleryItem {
+  id: string;
+  title: string;
+  category: string;
+  image_url: string;
+  featured: boolean;
+  active: boolean;
+}
+
 interface GalleryFormProps {
-  onSuccess?: () => void;
+  onSuccess: () => void;
+  galleryData?: GalleryItem | null;
 }
 
 export default function GalleryForm({
   onSuccess,
+  galleryData,
 }: GalleryFormProps) {
+  const isEditing = !!galleryData;
+
   const [title, setTitle] = useState("");
   const [category, setCategory] =
     useState("Wedding");
@@ -26,69 +39,114 @@ export default function GalleryForm({
   const [loading, setLoading] =
     useState(false);
 
+  useEffect(() => {
+    if (galleryData) {
+      setTitle(galleryData.title || "");
+      setCategory(
+        galleryData.category || "Wedding"
+      );
+      setFeatured(
+        galleryData.featured || false
+      );
+      setActive(
+        galleryData.active ?? true
+      );
+    }
+  }, [galleryData]);
+
+  async function uploadImage() {
+    if (!image) {
+      return galleryData?.image_url || "";
+    }
+
+    const fileName = `${Date.now()}-${
+      image.name
+    }`;
+
+    const { error: uploadError } =
+      await supabase.storage
+        .from("gallery")
+        .upload(fileName, image);
+
+    if (uploadError) {
+      throw uploadError;
+    }
+
+    const {
+      data: { publicUrl },
+    } = supabase.storage
+      .from("gallery")
+      .getPublicUrl(fileName);
+
+    return publicUrl;
+  }
+
   async function handleSubmit(
     e: React.FormEvent
   ) {
     e.preventDefault();
 
-    if (!image) {
-      alert("Please select an image");
-      return;
-    }
-
     try {
       setLoading(true);
 
-      const fileName = `${Date.now()}-${image.name}`;
-
-      const { error: uploadError } =
-        await supabase.storage
-          .from("gallery")
-          .upload(fileName, image);
-
-      if (uploadError) {
-        throw uploadError;
+      if (!isEditing && !image) {
+        alert(
+          "Please select an image"
+        );
+        return;
       }
 
-      const {
-        data: { publicUrl },
-      } = supabase.storage
-        .from("gallery")
-        .getPublicUrl(fileName);
+      const imageUrl =
+        await uploadImage();
 
-      const { error: insertError } =
-        await supabase
-          .from("gallery")
-          .insert([
-            {
+      if (isEditing) {
+        const { error } =
+          await supabase
+            .from("gallery")
+            .update({
               title,
               category,
-              image_url: publicUrl,
+              image_url: imageUrl,
               featured,
               active,
-            },
-          ]);
+            })
+            .eq(
+              "id",
+              galleryData!.id
+            );
 
-      if (insertError) {
-        throw insertError;
+        if (error) throw error;
+
+        alert(
+          "Gallery image updated successfully"
+        );
+      } else {
+        const { error } =
+          await supabase
+            .from("gallery")
+            .insert([
+              {
+                title,
+                category,
+                image_url: imageUrl,
+                featured,
+                active,
+              },
+            ]);
+
+        if (error) throw error;
+
+        alert(
+          "Gallery image added successfully"
+        );
       }
-
-      alert(
-        "Gallery image added successfully"
-      );
-
-      setTitle("");
-      setCategory("Wedding");
-      setFeatured(false);
-      setActive(true);
-      setImage(null);
 
       if (onSuccess) {
         onSuccess();
       }
     } catch (error) {
       console.error(
-        "Gallery upload error:",
+        "Gallery save error:",
         error
       );
 
@@ -105,7 +163,11 @@ export default function GalleryForm({
       onSubmit={handleSubmit}
       className="admin-form"
     >
-      <h2>Add Gallery Image</h2>
+      <h2>
+        {isEditing
+          ? "Edit Gallery Image"
+          : "Add Gallery Image"}
+      </h2>
 
       <input
         type="text"
@@ -128,21 +190,27 @@ export default function GalleryForm({
         <option value="Wedding">
           Wedding
         </option>
+
         <option value="Birthday">
           Birthday
         </option>
+
         <option value="Corporate">
           Corporate
         </option>
+
         <option value="Graduation">
           Graduation
         </option>
+
         <option value="Proposal">
           Proposal
         </option>
+
         <option value="Baby Shower">
           Baby Shower
         </option>
+
         <option value="Decor">
           Decor
         </option>
@@ -151,7 +219,6 @@ export default function GalleryForm({
       <input
         type="file"
         accept="image/*"
-        required
         onChange={(e) =>
           setImage(
             e.target.files?.[0] ||
@@ -159,6 +226,19 @@ export default function GalleryForm({
           )
         }
       />
+
+      {isEditing &&
+        galleryData?.image_url && (
+          <p
+            style={{
+              fontSize: "14px",
+              color: "#666",
+            }}
+          >
+            Leave image empty to keep
+            current image.
+          </p>
+        )}
 
       <label>
         <input
@@ -191,7 +271,11 @@ export default function GalleryForm({
         disabled={loading}
       >
         {loading
-          ? "Uploading..."
+          ? isEditing
+            ? "Updating..."
+            : "Uploading..."
+          : isEditing
+          ? "Update Gallery Image"
           : "Save Gallery Image"}
       </button>
     </form>

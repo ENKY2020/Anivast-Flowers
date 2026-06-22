@@ -1,281 +1,237 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { Search, Heart, SlidersHorizontal } from "lucide-react";
-import { rentals } from "@/data/rentals";
+import { Pencil, Trash2, Plus, X } from "lucide-react";
 
-export default function RentalsPage() {
-  const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState("All");
+import RentalForm from "../RentalForm";
+import { supabase } from "@/lib/supabase";
 
-  const categories = [
-    "All",
-    "Tents",
-    "Chairs",
-    "Tables",
-    "Decor",
-    "Stages",
-    "Facilities",
-  ];
+interface Rental {
+  id: string;
+  name: string;
+  slug: string;
+  category: string;
+  description: string;
+  price: number;
+  image_url: string;
+  featured: boolean;
+  active: boolean;
+}
 
-  const filteredRentals = rentals.filter((item) => {
-    const matchesSearch = item.name
-      .toLowerCase()
-      .includes(search.toLowerCase());
+export default function RentalsAdminPage() {
+  const [rentals, setRentals] = useState<Rental[]>([]);
+  const [loading, setLoading] = useState(true);
 
-    const matchesCategory =
-      activeCategory === "All" ||
-      item.category === activeCategory;
+  const [showForm, setShowForm] = useState(false);
+  const [selectedRental, setSelectedRental] =
+    useState<Rental | null>(null);
 
-    return matchesSearch && matchesCategory;
-  });
+  useEffect(() => {
+    loadRentals();
+  }, []);
+
+  async function loadRentals() {
+    setLoading(true);
+
+    const { data, error } = await supabase
+      .from("rentals")
+      .select("*")
+      .order("created_at", {
+        ascending: false,
+      });
+
+    if (error) {
+      console.error(error);
+    } else {
+      setRentals(data || []);
+    }
+
+    setLoading(false);
+  }
+
+  async function deleteRental(id: string) {
+    const confirmed = window.confirm(
+      "Delete this rental?"
+    );
+
+    if (!confirmed) return;
+
+    const { error } = await supabase
+      .from("rentals")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      alert("Failed to delete rental");
+      return;
+    }
+
+    loadRentals();
+  }
+
+  function openCreateModal() {
+    setSelectedRental(null);
+    setShowForm(true);
+  }
+
+  function openEditModal(rental: Rental) {
+    setSelectedRental(rental);
+    setShowForm(true);
+  }
+
+  function closeModal() {
+    setSelectedRental(null);
+    setShowForm(false);
+  }
 
   return (
-    <main
-      style={{
-        background: "#f7f3ee",
-        minHeight: "100vh",
-        padding: "1rem",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-        }}
-      >
-        <div
-          style={{
-            textAlign: "center",
-            marginBottom: "2rem",
-          }}
-        >
-          <h1
-            style={{
-              fontSize: "clamp(2rem,5vw,3.5rem)",
-              color: "#4a3128",
-            }}
-          >
-            Event Rentals
+    <div className="admin-page">
+      <div className="admin-header">
+        <div>
+          <h1 className="admin-title">
+            Rentals Management
           </h1>
 
-          <p
-            style={{
-              color: "#7b6b62",
-            }}
-          >
-            Tents, chairs, tables and event essentials
+          <p className="admin-subtitle">
+            Manage rental inventory,
+            pricing, promotions and availability.
           </p>
         </div>
 
-        {/* Search */}
-
-        <div
-          style={{
-            display: "flex",
-            gap: "1rem",
-            marginBottom: "1rem",
-          }}
+        <button
+          className="admin-btn admin-btn-primary"
+          onClick={openCreateModal}
         >
-          <div
-            style={{
-              flex: 1,
-              background: "#fff",
-              borderRadius: "999px",
-              display: "flex",
-              alignItems: "center",
-              padding: "0 1rem",
-            }}
-          >
-            <Search size={18} />
+          <Plus size={18} />
+          Add Rental
+        </button>
+      </div>
 
-            <input
-              type="text"
-              placeholder="Search rentals..."
-              value={search}
-              onChange={(e) =>
-                setSearch(e.target.value)
-              }
-              style={{
-                flex: 1,
-                border: "none",
-                outline: "none",
-                padding: "1rem",
-                background: "transparent",
+      {showForm && (
+        <div className="admin-modal-overlay">
+          <div className="admin-modal">
+            <div className="admin-modal-header">
+              <h2>
+                {selectedRental
+                  ? "Edit Rental"
+                  : "Add Rental"}
+              </h2>
+
+              <button
+                className="admin-close-btn"
+                onClick={closeModal}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <RentalForm
+              rentalData={selectedRental}
+              onSuccess={() => {
+                closeModal();
+                loadRentals();
               }}
             />
           </div>
-
-          <button
-            style={{
-              width: "52px",
-              height: "52px",
-              borderRadius: "50%",
-              border: "none",
-              background: "#fff",
-              cursor: "pointer",
-            }}
-          >
-            <SlidersHorizontal size={18} />
-          </button>
         </div>
+      )}
 
-        {/* Categories */}
+      <div className="admin-table-wrapper">
+        {loading ? (
+          <p>Loading rentals...</p>
+        ) : rentals.length === 0 ? (
+          <p>No rentals found.</p>
+        ) : (
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Rental</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Featured</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
 
-        <div
-          style={{
-            display: "flex",
-            gap: "0.75rem",
-            overflowX: "auto",
-            marginBottom: "2rem",
-          }}
-        >
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() =>
-                setActiveCategory(category)
-              }
-              style={{
-                border: "none",
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-                padding: "0.75rem 1rem",
-                borderRadius: "999px",
-                background:
-                  activeCategory === category
-                    ? "#b22222"
-                    : "#fff",
-                color:
-                  activeCategory === category
-                    ? "#fff"
-                    : "#4a3128",
-                fontWeight: 600,
-              }}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
+            <tbody>
+              {rentals.map((rental) => (
+                <tr key={rental.id}>
+                  <td>
+                    <Image
+                      src={rental.image_url}
+                      alt={rental.name}
+                      width={70}
+                      height={70}
+                      className="admin-thumb"
+                    />
+                  </td>
 
-        {/* Grid */}
+                  <td>{rental.name}</td>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit,minmax(250px,1fr))",
-            gap: "1.5rem",
-          }}
-        >
-          {filteredRentals.map((item) => (
-            <div
-              key={item.id}
-              style={{
-                background: "#fff",
-                borderRadius: "24px",
-                overflow: "hidden",
-                boxShadow:
-                  "0 8px 25px rgba(0,0,0,0.08)",
-              }}
-            >
-              <div
-                style={{
-                  position: "relative",
-                  height: "240px",
-                }}
-              >
-                <Image
-                  src={item.image}
-                  alt={item.name}
-                  fill
-                  style={{
-                    objectFit: "cover",
-                  }}
-                />
+                  <td>{rental.category}</td>
 
-                <button
-                  style={{
-                    position: "absolute",
-                    top: "12px",
-                    right: "12px",
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "50%",
-                    border: "none",
-                    background: "#fff",
-                  }}
-                >
-                  <Heart
-                    size={18}
-                    color="#b22222"
-                  />
-                </button>
-              </div>
+                  <td>
+                    KES{" "}
+                    {rental.price?.toLocaleString()}
+                  </td>
 
-              <div
-                style={{
-                  padding: "1rem",
-                }}
-              >
-                <span
-                  style={{
-                    display: "inline-block",
-                    background: "#b22222",
-                    color: "#fff",
-                    padding:
-                      "0.35rem 0.75rem",
-                    borderRadius: "999px",
-                    fontSize: "0.8rem",
-                    marginBottom: "0.75rem",
-                  }}
-                >
-                  {item.category}
-                </span>
+                  <td>
+                    {rental.featured ? (
+                      <span className="badge badge-featured">
+                        Featured
+                      </span>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
 
-                <h3
-                  style={{
-                    color: "#4a3128",
-                    fontSize: "1.5rem",
-                    marginBottom: "0.5rem",
-                  }}
-                >
-                  {item.name}
-                </h3>
+                  <td>
+                    {rental.active ? (
+                      <span className="badge badge-active">
+                        Active
+                      </span>
+                    ) : (
+                      <span className="badge badge-inactive">
+                        Hidden
+                      </span>
+                    )}
+                  </td>
 
-                <p
-                  style={{
-                    color: "#b22222",
-                    fontWeight: 700,
-                    fontSize: "1.2rem",
-                    marginBottom: "1rem",
-                  }}
-                >
-                  {item.price}
-                </p>
+                  <td>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "10px",
+                      }}
+                    >
+                      <button
+                        className="admin-btn admin-btn-edit"
+                        onClick={() =>
+                          openEditModal(rental)
+                        }
+                      >
+                        <Pencil size={18} />
+                      </button>
 
-                <Link
-                  href={`/rentals/${item.slug}`}
-                  style={{
-                    display: "block",
-                    textAlign: "center",
-                    background: "#b22222",
-                    color: "#fff",
-                    textDecoration: "none",
-                    padding: "0.9rem",
-                    borderRadius: "999px",
-                    fontWeight: 600,
-                  }}
-                >
-                  View Details →
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
+                      <button
+                        className="admin-btn admin-btn-delete"
+                        onClick={() =>
+                          deleteRental(rental.id)
+                        }
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
-    </main>
+    </div>
   );
 }

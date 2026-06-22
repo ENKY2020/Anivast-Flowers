@@ -2,6 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  X,
+} from "lucide-react";
 
 import GalleryForm from "../GalleryForm";
 import { supabase } from "@/lib/supabase";
@@ -25,134 +31,159 @@ export default function GalleryAdminPage() {
   const [showForm, setShowForm] =
     useState(false);
 
-  async function loadGallery() {
-    setLoading(true);
-
-    const { data, error } =
-      await supabase
-        .from("gallery")
-        .select("*")
-        .order(
-          "created_at",
-          {
-            ascending:
-              false,
-          }
-        );
-
-  if (error) {
-  console.error("Gallery fetch error:", error);
-  alert(JSON.stringify(error));
-} else {
-  console.log("Gallery data:", data);
-  setGallery(data || []);
-}
-
-    setLoading(false);
-  }
-
-  async function deleteImage(
-    id: string
-  ) {
-    const confirmed =
-      window.confirm(
-        "Delete image?"
-      );
-
-    if (!confirmed) return;
-
-    const { error } =
-      await supabase
-        .from("gallery")
-        .delete()
-        .eq("id", id);
-
-    if (error) {
-      alert(
-        "Failed to delete image"
-      );
-      return;
-    }
-
-    loadGallery();
-  }
+  const [selectedImage, setSelectedImage] =
+    useState<GalleryItem | null>(null);
 
   useEffect(() => {
     loadGallery();
   }, []);
 
+  async function loadGallery() {
+    try {
+      setLoading(true);
+
+      const { data, error } =
+        await supabase
+          .from("gallery")
+          .select("*")
+          .order("created_at", {
+            ascending: false,
+          });
+
+      if (error) throw error;
+
+      setGallery(data || []);
+    } catch (error) {
+      console.error(
+        "Gallery fetch error:",
+        error
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function deleteImage(id: string) {
+  const confirmed = window.confirm(
+    "Delete this gallery image?"
+  );
+
+  if (!confirmed) return;
+
+  try {
+    const { data, error } =
+      await supabase
+        .from("gallery")
+        .delete()
+        .eq("id", id)
+        .select();
+
+    console.log(
+      "Deleted rows:",
+      data
+    );
+
+    console.log(
+      "Delete error:",
+      error
+    );
+
+    if (error) {
+      alert(
+        JSON.stringify(error)
+      );
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      alert(
+        "Delete executed but no rows were removed."
+      );
+      return;
+    }
+
+    await loadGallery();
+  } catch (err) {
+    console.error(err);
+  }
+}
+    
+
+  function openCreateModal() {
+    setSelectedImage(null);
+    setShowForm(true);
+  }
+
+  function openEditModal(
+    image: GalleryItem
+  ) {
+    setSelectedImage(image);
+    setShowForm(true);
+  }
+
+  function closeModal() {
+    setSelectedImage(null);
+    setShowForm(false);
+  }
+
   return (
-    <div
-      style={{
-        padding: "2rem",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent:
-            "space-between",
-          alignItems: "center",
-          marginBottom:
-            "2rem",
-        }}
-      >
+    <div className="admin-page">
+      <div className="admin-header">
         <div>
-          <h1>
+          <h1 className="admin-title">
             Gallery Management
           </h1>
 
-          <p>
-            Manage gallery
-            images, featured
-            content and
+          <p className="admin-subtitle">
+            Manage gallery images,
+            featured content and
             categories.
           </p>
         </div>
 
         <button
-          onClick={() =>
-            setShowForm(
-              !showForm
-            )
+          className="admin-btn admin-btn-primary"
+          onClick={
+            openCreateModal
           }
-          style={{
-            background:
-              "#b22222",
-            color: "#fff",
-            border: "none",
-            borderRadius:
-              "999px",
-            padding:
-              "1rem 1.5rem",
-            cursor: "pointer",
-            fontWeight: 700,
-          }}
         >
-          {showForm
-            ? "Close"
-            : "+ Add Image"}
+          <Plus size={18} />
+          Add Image
         </button>
       </div>
 
       {showForm && (
-        <GalleryForm
-          onSuccess={
-            loadGallery
-          }
-        />
+        <div className="admin-modal-overlay">
+          <div className="admin-modal">
+            <div className="admin-modal-header">
+              <h2>
+                {selectedImage
+                  ? "Edit Gallery Image"
+                  : "Add Gallery Image"}
+              </h2>
+
+              <button
+                onClick={closeModal}
+                className="admin-close-btn"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <GalleryForm
+              galleryData={
+                selectedImage
+              }
+              onSuccess={() => {
+                closeModal();
+                loadGallery();
+              }}
+            />
+          </div>
+        </div>
       )}
 
-      <div
-        style={{
-          background: "#fff",
-          borderRadius:
-            "24px",
-          padding: "1.5rem",
-          marginTop: "2rem",
-          overflowX: "auto",
-        }}
-      >
+      <div className="admin-table-wrapper">
         {loading ? (
           <p>
             Loading gallery...
@@ -164,11 +195,7 @@ export default function GalleryAdminPage() {
             found.
           </p>
         ) : (
-          <table
-            style={{
-              width: "100%",
-            }}
-          >
+          <table className="admin-table">
             <thead>
               <tr>
                 <th>Image</th>
@@ -184,9 +211,7 @@ export default function GalleryAdminPage() {
               {gallery.map(
                 (item) => (
                   <tr
-                    key={
-                      item.id
-                    }
+                    key={item.id}
                   >
                     <td>
                       <Image
@@ -196,55 +221,76 @@ export default function GalleryAdminPage() {
                         alt={
                           item.title
                         }
-                        width={
-                          70
-                        }
-                        height={
-                          70
-                        }
-                        style={{
-                          objectFit:
-                            "cover",
-                          borderRadius:
-                            "10px",
-                        }}
+                        width={70}
+                        height={70}
+                        className="admin-thumb"
                       />
                     </td>
 
                     <td>
-                      {
-                        item.title
-                      }
+                      {item.title}
                     </td>
 
                     <td>
-                      {
-                        item.category
-                      }
+                      {item.category}
                     </td>
 
                     <td>
-                      {item.featured
-                        ? "⭐"
-                        : "—"}
+                      {item.featured ? (
+                        <span className="badge badge-featured">
+                          Featured
+                        </span>
+                      ) : (
+                        "—"
+                      )}
                     </td>
 
                     <td>
-                      {item.active
-                        ? "✅"
-                        : "❌"}
+                      {item.active ? (
+                        <span className="badge badge-active">
+                          Active
+                        </span>
+                      ) : (
+                        <span className="badge badge-inactive">
+                          Hidden
+                        </span>
+                      )}
                     </td>
 
                     <td>
-                      <button
-                        onClick={() =>
-                          deleteImage(
-                            item.id
-                          )
-                        }
+                      <div
+                        style={{
+                          display:
+                            "flex",
+                          gap: "10px",
+                        }}
                       >
-                        Delete
-                      </button>
+                        <button
+                          className="admin-btn admin-btn-edit"
+                          onClick={() =>
+                            openEditModal(
+                              item
+                            )
+                          }
+                        >
+                          <Pencil
+                            size={18}
+                          />
+                        </button>
+
+                        <button
+                          className="admin-btn admin-btn-delete"
+                          onClick={() =>
+                            deleteImage(
+                              item.id
+                            )
+                          }
+                        >
+                          <Trash2
+                            size={18}
+                          />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 )

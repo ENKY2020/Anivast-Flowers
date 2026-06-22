@@ -9,12 +9,18 @@ import {
   Gift,
   Tent,
   MessageCircle,
+  LayoutDashboard,
+  LogOut,
 } from "lucide-react";
 
-import "@/styles/mobile-bottom-nav.css";
+import { useAuth } from "@/context/AuthContext";
+
+import "../styles/mobile-bottom-nav.css";
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
+
+  const { user, isAdmin, logout } = useAuth();
 
   const navItems = [
     {
@@ -28,12 +34,6 @@ export default function MobileBottomNav() {
       icon: Flower2,
     },
     {
-      href: "https://wa.me/254700000000",
-      label: "Chat",
-      icon: MessageCircle,
-      external: true,
-    },
-    {
       href: "/packages",
       label: "Packages",
       icon: Gift,
@@ -43,41 +43,71 @@ export default function MobileBottomNav() {
       label: "Rentals",
       icon: Tent,
     },
+    {
+      href: "https://wa.me/254703234167",
+      label: "Chat",
+      icon: MessageCircle,
+      external: true,
+    },
   ];
 
   return (
-    <nav className="mobile-bottom-nav">
-      {navItems.map((item) => {
-        const Icon = item.icon;
+    <>
+      <nav className="mobile-bottom-nav">
+        {navItems.map((item) => {
+          const Icon = item.icon;
 
-        if (item.external) {
+          if (item.external) {
+            return (
+              <a
+                key={item.label}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mobile-nav-item"
+              >
+                <Icon size={22} />
+                <span>{item.label}</span>
+              </a>
+            );
+          }
+
           return (
-            <a
+            <Link
               key={item.label}
               href={item.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mobile-nav-item whatsapp-item"
+              className={`mobile-nav-item ${
+                pathname === item.href ? "active" : ""
+              }`}
             >
               <Icon size={22} />
               <span>{item.label}</span>
-            </a>
+            </Link>
           );
-        }
+        })}
+      </nav>
 
-        return (
-          <Link
-            key={item.label}
-            href={item.href}
-            className={`mobile-nav-item ${
-              pathname === item.href ? "active" : ""
-            }`}
+      {user && (
+        <div className="mobile-account-fab">
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="mobile-account-btn"
+            >
+              <LayoutDashboard size={18} />
+              <span>Dashboard</span>
+            </Link>
+          )}
+
+          <button
+            onClick={logout}
+            className="mobile-logout-btn"
           >
-            <Icon size={22} />
-            <span>{item.label}</span>
-          </Link>
-        );
-      })}
-    </nav>
+            <LogOut size={18} />
+            <span>Logout</span>
+          </button>
+        </div>
+      )}
+    </>
   );
 }

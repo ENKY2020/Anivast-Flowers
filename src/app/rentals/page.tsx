@@ -1,237 +1,124 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Pencil, Trash2, Plus, X } from "lucide-react";
+import Link from "next/link";
 
-import RentalForm from "../RentalForm";
-import { supabase } from "@/lib/supabase";
+import {
+  Rental,
+  getRentals,
+} from "@/lib/database";
 
-interface Rental {
-  id: string;
-  name: string;
-  slug: string;
-  category: string;
-  description: string;
-  price: number;
-  image_url: string;
-  featured: boolean;
-  active: boolean;
-}
+export const metadata = {
+  title: "Event Rentals | Anivast",
+  description:
+    "Browse premium tents, chairs, tables, stages, décor and event equipment rentals.",
+};
 
-export default function RentalsAdminPage() {
-  const [rentals, setRentals] = useState<Rental[]>([]);
-  const [loading, setLoading] = useState(true);
+export default async function RentalsPage() {
+  const rentals = await getRentals();
 
-  const [showForm, setShowForm] = useState(false);
-  const [selectedRental, setSelectedRental] =
-    useState<Rental | null>(null);
-
-  useEffect(() => {
-    loadRentals();
-  }, []);
-
-  async function loadRentals() {
-    setLoading(true);
-
-    const { data, error } = await supabase
-      .from("rentals")
-      .select("*")
-      .order("created_at", {
-        ascending: false,
-      });
-
-    if (error) {
-      console.error(error);
-    } else {
-      setRentals(data || []);
-    }
-
-    setLoading(false);
-  }
-
-  async function deleteRental(id: string) {
-    const confirmed = window.confirm(
-      "Delete this rental?"
-    );
-
-    if (!confirmed) return;
-
-    const { error } = await supabase
-      .from("rentals")
-      .delete()
-      .eq("id", id);
-
-    if (error) {
-      alert("Failed to delete rental");
-      return;
-    }
-
-    loadRentals();
-  }
-
-  function openCreateModal() {
-    setSelectedRental(null);
-    setShowForm(true);
-  }
-
-  function openEditModal(rental: Rental) {
-    setSelectedRental(rental);
-    setShowForm(true);
-  }
-
-  function closeModal() {
-    setSelectedRental(null);
-    setShowForm(false);
-  }
+  const featuredRentals = rentals.filter(
+    (rental) => rental.featured
+  );
 
   return (
-    <div className="admin-page">
-      <div className="admin-header">
-        <div>
-          <h1 className="admin-title">
-            Rentals Management
+    <main className="rentals-page">
+      <section className="rentals-hero">
+        <div className="container">
+          <span className="hero-badge">
+            Event Rentals
+          </span>
+
+          <h1>
+            Premium Event
+            <br />
+            Rental Collection
           </h1>
 
-          <p className="admin-subtitle">
-            Manage rental inventory,
-            pricing, promotions and availability.
+          <p>
+            Tents, chairs, tables,
+            stages, décor and event
+            equipment for weddings,
+            birthdays, corporate events
+            and special celebrations.
           </p>
         </div>
+      </section>
 
-        <button
-          className="admin-btn admin-btn-primary"
-          onClick={openCreateModal}
-        >
-          <Plus size={18} />
-          Add Rental
-        </button>
-      </div>
+      {featuredRentals.length > 0 && (
+        <section className="featured-rentals">
+          <div className="container">
+            <h2>Featured Rentals</h2>
 
-      {showForm && (
-        <div className="admin-modal-overlay">
-          <div className="admin-modal">
-            <div className="admin-modal-header">
-              <h2>
-                {selectedRental
-                  ? "Edit Rental"
-                  : "Add Rental"}
-              </h2>
-
-              <button
-                className="admin-close-btn"
-                onClick={closeModal}
-              >
-                <X size={20} />
-              </button>
+            <div className="rentals-grid">
+              {featuredRentals.map((rental) => (
+                <RentalCard
+                  key={rental.id}
+                  rental={rental}
+                />
+              ))}
             </div>
-
-            <RentalForm
-              rentalData={selectedRental}
-              onSuccess={() => {
-                closeModal();
-                loadRentals();
-              }}
-            />
           </div>
-        </div>
+        </section>
       )}
 
-      <div className="admin-table-wrapper">
-        {loading ? (
-          <p>Loading rentals...</p>
-        ) : rentals.length === 0 ? (
-          <p>No rentals found.</p>
-        ) : (
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Image</th>
-                <th>Rental</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Featured</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
+      <section className="all-rentals">
+        <div className="container">
+          <h2>All Rentals</h2>
 
-            <tbody>
-              {rentals.map((rental) => (
-                <tr key={rental.id}>
-                  <td>
-                    <Image
-                      src={rental.image_url}
-                      alt={rental.name}
-                      width={70}
-                      height={70}
-                      className="admin-thumb"
-                    />
-                  </td>
+          <div className="rentals-grid">
+            {rentals.map((rental) => (
+              <RentalCard
+                key={rental.id}
+                rental={rental}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
 
-                  <td>{rental.name}</td>
-
-                  <td>{rental.category}</td>
-
-                  <td>
-                    KES{" "}
-                    {rental.price?.toLocaleString()}
-                  </td>
-
-                  <td>
-                    {rental.featured ? (
-                      <span className="badge badge-featured">
-                        Featured
-                      </span>
-                    ) : (
-                      "—"
-                    )}
-                  </td>
-
-                  <td>
-                    {rental.active ? (
-                      <span className="badge badge-active">
-                        Active
-                      </span>
-                    ) : (
-                      <span className="badge badge-inactive">
-                        Hidden
-                      </span>
-                    )}
-                  </td>
-
-                  <td>
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "10px",
-                      }}
-                    >
-                      <button
-                        className="admin-btn admin-btn-edit"
-                        onClick={() =>
-                          openEditModal(rental)
-                        }
-                      >
-                        <Pencil size={18} />
-                      </button>
-
-                      <button
-                        className="admin-btn admin-btn-delete"
-                        onClick={() =>
-                          deleteRental(rental.id)
-                        }
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+function RentalCard({
+  rental,
+}: {
+  rental: Rental;
+}) {
+  return (
+    <article className="rental-card">
+      <div className="rental-image">
+        <Image
+          src={rental.image_url}
+          alt={rental.name}
+          width={800}
+          height={600}
+        />
       </div>
-    </div>
+
+      <div className="rental-content">
+        <span className="rental-category">
+          {rental.category}
+        </span>
+
+        <h3>{rental.name}</h3>
+
+        <p>{rental.description}</p>
+
+        <div className="rental-footer">
+          <span className="rental-price">
+            KES {rental.price.toLocaleString()}
+          </span>
+
+          <Link
+            href={`https://wa.me/254703234167?text=${encodeURIComponent(
+              `Hello Anivast, I am interested in renting ${rental.name}`
+            )}`}
+            target="_blank"
+            className="rental-btn"
+          >
+            Book Now
+          </Link>
+        </div>
+      </div>
+    </article>
   );
 }

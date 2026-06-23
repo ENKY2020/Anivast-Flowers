@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -8,9 +9,12 @@ import {
   Flower2,
   Gift,
   Tent,
+  Menu,
   MessageCircle,
   LayoutDashboard,
   LogOut,
+  LogIn,
+  X,
 } from "lucide-react";
 
 import { useAuth } from "@/context/AuthContext";
@@ -21,6 +25,8 @@ export default function MobileBottomNav() {
   const pathname = usePathname();
 
   const { user, isAdmin, logout } = useAuth();
+
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const navItems = [
     {
@@ -43,12 +49,6 @@ export default function MobileBottomNav() {
       label: "Rentals",
       icon: Tent,
     },
-    {
-      href: "https://wa.me/254703234167",
-      label: "Chat",
-      icon: MessageCircle,
-      external: true,
-    },
   ];
 
   return (
@@ -56,21 +56,6 @@ export default function MobileBottomNav() {
       <nav className="mobile-bottom-nav">
         {navItems.map((item) => {
           const Icon = item.icon;
-
-          if (item.external) {
-            return (
-              <a
-                key={item.label}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mobile-nav-item"
-              >
-                <Icon size={22} />
-                <span>{item.label}</span>
-              </a>
-            );
-          }
 
           const isActive =
             item.href === "/"
@@ -90,28 +75,81 @@ export default function MobileBottomNav() {
             </Link>
           );
         })}
+
+        <button
+          type="button"
+          className="mobile-nav-item mobile-menu-trigger"
+          onClick={() => setMenuOpen(true)}
+        >
+          <Menu size={22} />
+          <span>Menu</span>
+        </button>
       </nav>
 
-      {user && (
-        <div className="mobile-account-fab">
-          {isAdmin && (
-            <Link
-              href="/admin"
-              className="mobile-account-btn"
-            >
-              <LayoutDashboard size={18} />
-              <span>Dashboard</span>
-            </Link>
-          )}
-
-          <button
-            type="button"
-            onClick={logout}
-            className="mobile-logout-btn"
+      {menuOpen && (
+        <div
+          className="mobile-menu-overlay"
+          onClick={() => setMenuOpen(false)}
+        >
+          <div
+            className="mobile-menu-sheet"
+            onClick={(e) => e.stopPropagation()}
           >
-            <LogOut size={18} />
-            <span>Logout</span>
-          </button>
+            <div className="mobile-menu-header">
+              <h3>Anivast</h3>
+
+              <button
+                type="button"
+                className="mobile-close-btn"
+                onClick={() => setMenuOpen(false)}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="mobile-menu-links">
+              <a
+                href="https://wa.me/254703234167"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mobile-menu-link"
+              >
+                <MessageCircle size={18} />
+                <span>WhatsApp</span>
+              </a>
+
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  className="mobile-menu-link"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <LayoutDashboard size={18} />
+                  <span>Dashboard</span>
+                </Link>
+              )}
+
+              {user ? (
+                <button
+                  type="button"
+                  onClick={logout}
+                  className="mobile-menu-link"
+                >
+                  <LogOut size={18} />
+                  <span>Logout</span>
+                </button>
+              ) : (
+                <Link
+                  href="/login"
+                  className="mobile-menu-link"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <LogIn size={18} />
+                  <span>Login</span>
+                </Link>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </>

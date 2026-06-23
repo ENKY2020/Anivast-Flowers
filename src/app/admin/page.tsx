@@ -9,10 +9,13 @@ import {
   Megaphone,
   Sparkles,
   LogOut,
+  ArrowRight,
 } from "lucide-react";
 
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/context/AuthContext";
+
+import "@/styles/admin.css";
 
 export default function AdminPage() {
   const { user, logout } = useAuth();
@@ -56,7 +59,7 @@ export default function AdminPage() {
     {
       title: "Seasonal Campaigns",
       description:
-        "Valentine's Day, Father's Day, Christmas and special offers.",
+        "Valentine's Day, Christmas, Father's Day and special offers.",
       href: "/admin/events",
       icon: Sparkles,
     },
@@ -64,115 +67,58 @@ export default function AdminPage() {
 
   return (
     <ProtectedRoute adminOnly>
-      <main
-        style={{
-          minHeight: "100vh",
-          background: "#faf7f2",
-          padding: "40px 20px",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: "1200px",
-            margin: "0 auto",
-          }}
-        >
-          {/* Header */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              flexWrap: "wrap",
-              gap: "20px",
-              marginBottom: "50px",
-            }}
-          >
-            <div>
-              <h1
-                style={{
-                  fontSize: "2.7rem",
-                  color: "#7a1f1f",
-                  marginBottom: "10px",
-                }}
-              >
-                Anivast Admin Dashboard
-              </h1>
+      <main className="admin-dashboard">
+        <div className="admin-container">
 
-              <p
-                style={{
-                  color: "#666",
-                  fontSize: "1rem",
-                }}
-              >
+          <div className="admin-hero">
+            <div>
+              <h1>Anivast Admin</h1>
+              <p>
                 Welcome back {user?.email}
               </p>
             </div>
 
             <button
               onClick={logout}
-              style={{
-                background: "#7a1f1f",
-                color: "#fff",
-                border: "none",
-                padding: "14px 24px",
-                borderRadius: "14px",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                fontWeight: 600,
-              }}
+              className="admin-logout-btn"
             >
               <LogOut size={18} />
               Logout
             </button>
           </div>
 
-          {/* Quick Notice */}
-          <div
-            style={{
-              background: "#fff",
-              padding: "24px",
-              borderRadius: "20px",
-              marginBottom: "40px",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
-            }}
-          >
-            <h2
-              style={{
-                color: "#7a1f1f",
-                marginBottom: "10px",
-              }}
-            >
-              Marketing Tips
-            </h2>
+          <div className="admin-tip-card">
+            <h2>Marketing Tips</h2>
 
-            <p
-              style={{
-                color: "#666",
-                lineHeight: 1.7,
-              }}
-            >
+            <p>
               Featured flowers appear on the homepage.
               Featured packages appear in promotions.
-              Featured gallery images appear inside
-              "Memories We've Created".
-              Use Seasonal Campaigns to plan Valentine's,
-              Father's Day, Mother's Day, Christmas and
-              other special offers.
+              Featured gallery images appear in Memories
+              We've Created. Use Seasonal Campaigns for
+              Valentine's Day, Father's Day, Christmas and
+              special offers.
             </p>
           </div>
 
-          {/* Modules */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "repeat(auto-fit,minmax(280px,1fr))",
-              gap: "24px",
-            }}
-          >
+          <div className="admin-quick-actions">
+            <Link href="/admin/flowers">
+              + Flower
+            </Link>
+
+            <Link href="/admin/packages">
+              + Package
+            </Link>
+
+            <Link href="/admin/rentals">
+              + Rental
+            </Link>
+
+            <Link href="/admin/events">
+              + Campaign
+            </Link>
+          </div>
+
+          <div className="admin-grid">
             {sections.map((section) => {
               const Icon = section.icon;
 
@@ -180,46 +126,25 @@ export default function AdminPage() {
                 <Link
                   key={section.title}
                   href={section.href}
-                  style={{
-                    background: "#fff",
-                    borderRadius: "22px",
-                    padding: "28px",
-                    textDecoration: "none",
-                    color: "inherit",
-                    boxShadow:
-                      "0 10px 30px rgba(0,0,0,0.06)",
-                    transition: "all .3s ease",
-                  }}
+                  className="admin-module-card"
                 >
-                  <Icon
-                    size={42}
-                    color="#7a1f1f"
-                    style={{
-                      marginBottom: "18px",
-                    }}
-                  />
+                  <div className="admin-module-icon">
+                    <Icon size={34} />
+                  </div>
 
-                  <h3
-                    style={{
-                      color: "#7a1f1f",
-                      marginBottom: "12px",
-                    }}
-                  >
-                    {section.title}
-                  </h3>
+                  <h3>{section.title}</h3>
 
-                  <p
-                    style={{
-                      color: "#666",
-                      lineHeight: 1.7,
-                    }}
-                  >
-                    {section.description}
-                  </p>
+                  <p>{section.description}</p>
+
+                  <span className="admin-module-link">
+                    Open
+                    <ArrowRight size={16} />
+                  </span>
                 </Link>
               );
             })}
           </div>
+
         </div>
       </main>
     </ProtectedRoute>

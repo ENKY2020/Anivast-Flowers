@@ -1,152 +1,42 @@
-"use client";
+import Hero from "@/components/home/Hero";
+import QuickActions from "@/components/home/QuickActions";
 
-import Link from "next/link";
-import {
-  Flower2,
-  Package,
-  Tent,
-  ImageIcon,
-  Megaphone,
-  Sparkles,
-  LogOut,
-  ArrowRight,
-} from "lucide-react";
+import FeaturedFlowers from "@/components/home/FeaturedFlowers";
+import FeaturedPackages from "@/components/home/FeaturedPackages";
+import FeaturedRentals from "@/components/home/FeaturedRentals";
 
-import ProtectedRoute from "@/components/ProtectedRoute";
-import { useAuth } from "@/context/AuthContext";
+import GalleryPreview from "@/components/home/GalleryPreview";
 
-import "@/styles/admin.css";
+import SeasonalOffer from "@/components/home/SeasonalOffer";
 
-export default function AdminPage() {
-  const { user, logout } = useAuth();
+import Services from "@/components/home/Services";
 
-  const sections = [
-    {
-      title: "Flowers",
-      description:
-        "Manage flower products, bouquets and featured homepage flowers.",
-      href: "/admin/flowers",
-      icon: Flower2,
-    },
-    {
-      title: "Packages",
-      description:
-        "Create and update event packages displayed to customers.",
-      href: "/admin/packages",
-      icon: Package,
-    },
-    {
-      title: "Rentals",
-      description:
-        "Manage chairs, tents, backdrops and event rentals.",
-      href: "/admin/rentals",
-      icon: Tent,
-    },
-    {
-      title: "Gallery",
-      description:
-        "Upload and manage event photos shown in the public gallery.",
-      href: "/admin/gallery",
-      icon: ImageIcon,
-    },
-    {
-      title: "Marketing Center",
-      description:
-        "Manage homepage promotions and customer-facing campaigns.",
-      href: "/admin/events",
-      icon: Megaphone,
-    },
-    {
-      title: "Seasonal Campaigns",
-      description:
-        "Valentine's Day, Christmas, Father's Day and special offers.",
-      href: "/admin/events",
-      icon: Sparkles,
-    },
-  ];
+import ContactCTA from "@/components/home/ContactCTA";
 
+import Footer from "@/components/home/Footer";
+
+export default function HomePage() {
   return (
-    <ProtectedRoute adminOnly>
-      <main className="admin-dashboard">
-        <div className="admin-container">
+    <main>
+      <Hero />
 
-          <div className="admin-hero">
-            <div>
-              <h1>Anivast Admin</h1>
-              <p>
-                Welcome back {user?.email}
-              </p>
-            </div>
+      <QuickActions />
 
-            <button
-              onClick={logout}
-              className="admin-logout-btn"
-            >
-              <LogOut size={18} />
-              Logout
-            </button>
-          </div>
+      <FeaturedFlowers />
 
-          <div className="admin-tip-card">
-            <h2>Marketing Tips</h2>
+      <FeaturedPackages />
 
-            <p>
-              Featured flowers appear on the homepage.
-              Featured packages appear in promotions.
-              Featured gallery images appear in Memories
-              We've Created. Use Seasonal Campaigns for
-              Valentine's Day, Father's Day, Christmas and
-              special offers.
-            </p>
-          </div>
+      <FeaturedRentals />
 
-          <div className="admin-quick-actions">
-            <Link href="/admin/flowers">
-              + Flower
-            </Link>
+      <GalleryPreview />
 
-            <Link href="/admin/packages">
-              + Package
-            </Link>
+      <SeasonalOffer />
 
-            <Link href="/admin/rentals">
-              + Rental
-            </Link>
+      <Services />
 
-            <Link href="/admin/events">
-              + Campaign
-            </Link>
-          </div>
+      <ContactCTA />
 
-          <div className="admin-grid">
-            {sections.map((section) => {
-              const Icon = section.icon;
-
-              return (
-                <Link
-                  key={section.title}
-                  href={section.href}
-                  className="admin-module-card"
-                >
-                  <div className="admin-module-icon">
-                    <Icon size={34} />
-                  </div>
-
-                  <h3>{section.title}</h3>
-
-                  <p>{section.description}</p>
-
-                  <span className="admin-module-link">
-                    Open
-                    <ArrowRight size={16} />
-                  </span>
-                </Link>
-              );
-            })}
-          </div>
-
-        </div>
-      </main>
-    </ProtectedRoute>
+      <Footer />
+    </main>
   );
 }

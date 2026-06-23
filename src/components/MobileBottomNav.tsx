@@ -72,12 +72,17 @@ export default function MobileBottomNav() {
             );
           }
 
+          const isActive =
+            item.href === "/"
+              ? pathname === "/"
+              : pathname.startsWith(item.href);
+
           return (
             <Link
               key={item.label}
               href={item.href}
               className={`mobile-nav-item ${
-                pathname === item.href ? "active" : ""
+                isActive ? "active" : ""
               }`}
             >
               <Icon size={22} />
@@ -100,6 +105,7 @@ export default function MobileBottomNav() {
           )}
 
           <button
+            type="button"
             onClick={logout}
             className="mobile-logout-btn"
           >

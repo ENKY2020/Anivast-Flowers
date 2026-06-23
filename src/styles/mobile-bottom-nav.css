@@ -171,3 +171,36 @@
   background: #8b1e1e;
   color: #ffffff;
 }
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  text-decoration: none;
+
+  color: #6b5b52;
+
+  font-size: 0.72rem;
+
+  font-weight: 600;
+
+  transition: all 0.25s ease;
+}
+
+.mobile-nav-item svg {
+  transition: all 0.25s ease;
+}
+
+.mobile-nav-item:hover {
+  color: #b22222;
+}
+
+.mobile-nav-item.active {
+  color: #b22222;
+}
+
+.mobile-nav-item.active svg {
+  transform: scale(1.1);
+}

@@ -23,49 +23,66 @@ export default function WishlistButton({
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    const wishlist: WishlistItem[] = JSON.parse(
-      localStorage.getItem("anivast-wishlist") || "[]"
-    );
+    try {
+      const wishlist: WishlistItem[] = JSON.parse(
+        localStorage.getItem("anivast-wishlist") || "[]"
+      );
 
-    setSaved(
-      wishlist.some((item) => item.id === id)
-    );
+      setSaved(
+        wishlist.some(
+          (item) => item && item.id === id
+        )
+      );
+    } catch {
+      setSaved(false);
+    }
   }, [id]);
 
   const toggleWishlist = () => {
-    const wishlist: WishlistItem[] = JSON.parse(
-      localStorage.getItem("anivast-wishlist") || "[]"
-    );
-
-    const exists = wishlist.some(
-      (item) => item.id === id
-    );
-
-    let updatedWishlist: WishlistItem[];
-
-    if (exists) {
-      updatedWishlist = wishlist.filter(
-        (item) => item.id !== id
+    try {
+      const wishlist: WishlistItem[] = JSON.parse(
+        localStorage.getItem("anivast-wishlist") || "[]"
       );
 
-      setSaved(false);
-    } else {
-      updatedWishlist = [
-        ...wishlist,
-        {
-          id,
-          name,
-          image,
-        },
-      ];
+      const cleanedWishlist = wishlist.filter(
+        (item) => item && item.id
+      );
 
-      setSaved(true);
+      const exists = cleanedWishlist.some(
+        (item) => item.id === id
+      );
+
+      let updatedWishlist: WishlistItem[];
+
+      if (exists) {
+        updatedWishlist = cleanedWishlist.filter(
+          (item) => item.id !== id
+        );
+
+        setSaved(false);
+      } else {
+        updatedWishlist = [
+          ...cleanedWishlist,
+          {
+            id,
+            name,
+            image,
+          },
+        ];
+
+        setSaved(true);
+      }
+
+      localStorage.setItem(
+        "anivast-wishlist",
+        JSON.stringify(updatedWishlist)
+      );
+    } catch (error) {
+      console.error(
+        "Wishlist error:",
+        error
+      );
     }
-
-    localStorage.setItem(
-      "anivast-wishlist",
-      JSON.stringify(updatedWishlist)
-    );
   };
 
   return (

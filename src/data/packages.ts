@@ -7,33 +7,33 @@ export const packages = [
     image: "/images/packages/birthday-package.jpg",
     price: "KES 7,500",
     description:
-      "Flower bouquet, celebration setup, gift package and personalized card.",
+      "Birthday celebration package with flowers, gifts, décor and personalized setup.",
     featured: true,
     active: true,
   },
 
   {
     id: 2,
-    name: "Normal Package",
-    slug: "normal-package",
+    name: "Funeral Package",
+    slug: "funeral-package",
     category: "Funeral",
     image: "/images/packages/normal-package.jpg",
     price: "KES 12,000",
     description:
-      "Standard funeral flower package with professional arrangement.",
+      "Funeral flower package with professional arrangements and event support.",
     featured: false,
     active: true,
   },
 
   {
     id: 3,
-    name: "VIP Package",
-    slug: "vip-package",
+    name: "Premium Package",
+    slug: "premium-package",
     category: "Premium",
     image: "/images/packages/vip-package.jpg",
     price: "KES 20,000",
     description:
-      "Luxury premium package with flowers, décor and full event styling.",
+      "Luxury package with premium flowers, décor styling and customized event presentation.",
     featured: true,
     active: true,
   },

@@ -1,66 +1,208 @@
+/* ===================================
+   RENTALS PAGE
+=================================== */
+
 .rentals-page {
-  background: #f7f3ee;
   min-height: 100vh;
+  background:
+    radial-gradient(circle at top right,
+      rgba(194,31,31,.08),
+      transparent 35%),
+    linear-gradient(
+      180deg,
+      #faf7f2 0%,
+      #f4eee8 100%
+    );
+  padding: 50px 0 100px;
 }
 
-/* ==========================
-   SECTION
-========================== */
+/* ===================================
+   HEADER
+=================================== */
 
-.rentals-section {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 50px 24px 80px;
-}
-
-.section-header {
+.rentals-header {
+  max-width: 950px;
+  margin: 0 auto 50px;
+  padding: 0 24px;
   text-align: center;
+}
+
+.rentals-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  background: rgba(255,255,255,.7);
+  backdrop-filter: blur(14px);
+
+  color: #c21f1f;
+
+  padding: 12px 22px;
+
+  border-radius: 999px;
+
+  border: 1px solid rgba(194,31,31,.12);
+
+  font-weight: 700;
+
+  margin-bottom: 24px;
+}
+
+.rentals-header h1 {
+  font-size: clamp(2.8rem, 5vw, 5rem);
+  line-height: 1.05;
+  color: #2f2018;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+}
+
+.rentals-header p {
+  max-width: 760px;
+  margin: auto;
+  color: #6c5b52;
+  line-height: 1.9;
+  font-size: 1.05rem;
+}
+
+/* ===================================
+   FILTERS
+=================================== */
+
+.rentals-filters {
+  max-width: 1350px;
+  margin: auto;
+  padding: 0 24px;
   margin-bottom: 40px;
 }
 
-.section-header h2 {
-  font-family: var(--font-heading);
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  color: var(--text-primary);
-  margin-bottom: 12px;
+.rentals-search {
+  margin-bottom: 24px;
 }
 
-.section-header p {
-  color: #6b5a50;
-  max-width: 700px;
-  margin: 0 auto;
-  line-height: 1.7;
+.rentals-search input {
+  width: 100%;
+  height: 66px;
+
+  border: 1px solid rgba(0,0,0,.06);
+
+  border-radius: 999px;
+
+  padding: 0 26px;
+
+  font-size: 1rem;
+
+  background: rgba(255,255,255,.92);
+
+  backdrop-filter: blur(16px);
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.05);
+
+  transition: .3s ease;
 }
 
-/* ==========================
+.rentals-search input:focus {
+  border-color: rgba(194,31,31,.35);
+  box-shadow:
+    0 10px 35px rgba(194,31,31,.12);
+}
+
+.rentals-categories {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: none;
+}
+
+.rentals-categories::-webkit-scrollbar {
+  display: none;
+}
+
+.category-pill {
+  flex-shrink: 0;
+
+  border: none;
+
+  background: rgba(255,255,255,.92);
+
+  color: #432b22;
+
+  padding: 14px 22px;
+
+  border-radius: 999px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: .3s ease;
+
+  box-shadow:
+    0 8px 20px rgba(0,0,0,.05);
+}
+
+.category-pill:hover {
+  transform: translateY(-3px);
+}
+
+.category-pill.active {
+  background: #c21f1f;
+  color: #fff;
+}
+
+/* ===================================
    GRID
-========================== */
+=================================== */
 
 .rentals-grid {
+  max-width: 1350px;
+
+  margin: auto;
+
+  padding: 0 24px;
+
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(300px, 1fr));
+
+  gap: 28px;
 }
 
-/* ==========================
+/* ===================================
    CARD
-========================== */
+=================================== */
 
 .rental-card {
-  background: #ffffff;
-  border-radius: 24px;
+  position: relative;
+
+  background: rgba(255,255,255,.92);
+
+  backdrop-filter: blur(14px);
+
+  border-radius: 28px;
+
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
+
+  border: 1px solid rgba(255,255,255,.5);
+
+  transition: .35s ease;
+
+  box-shadow:
+    0 18px 45px rgba(0,0,0,.07);
 }
 
 .rental-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.1);
+  transform: translateY(-10px);
+
+  box-shadow:
+    0 30px 60px rgba(0,0,0,.12);
 }
 
 .rental-image {
-  height: 220px;
+  height: 260px;
   overflow: hidden;
 }
 
@@ -68,95 +210,148 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
+  transition: .5s ease;
 }
 
-.rental-card:hover .rental-image img {
-  transform: scale(1.05);
+.rental-card:hover img {
+  transform: scale(1.08);
 }
 
 .rental-content {
-  padding: 20px;
+  padding: 24px;
 }
 
 .rental-category {
   display: inline-block;
-  background: #f4e4de;
+
+  background: rgba(194,31,31,.08);
+
   color: #c21f1f;
-  padding: 6px 14px;
+
+  padding: 8px 16px;
+
   border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  margin-bottom: 14px;
+
+  font-size: .8rem;
+
+  font-weight: 700;
+
+  margin-bottom: 16px;
 }
 
 .rental-content h3 {
-  font-family: var(--font-heading);
-  font-size: 1.1rem;
-  color: var(--text-primary);
+  font-size: 1.5rem;
+  line-height: 1.3;
+  color: #2f2018;
   margin-bottom: 12px;
-  line-height: 1.4;
 }
 
 .rental-content p {
-  color: #6b5a50;
-  line-height: 1.7;
-  font-size: 0.95rem;
-  min-height: 80px;
-  margin-bottom: 18px;
+  color: #6c5b52;
+  line-height: 1.8;
+  margin-bottom: 20px;
 }
 
 .rental-footer {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
 }
 
 .rental-price {
   color: #c21f1f;
-  font-size: 1.2rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 800;
 }
 
 .rental-btn {
+  text-decoration: none;
+
   background: #c21f1f;
   color: white;
-  text-decoration: none;
+
+  padding: 12px 20px;
+
   border-radius: 999px;
-  padding: 12px 18px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  transition: 0.3s ease;
+
+  font-weight: 700;
+
+  transition: .3s ease;
 }
 
 .rental-btn:hover {
-  background: #a91919;
+  transform: translateY(-2px);
 }
 
-/* ==========================
-   TABLET
-========================== */
+/* ===================================
+   EMPTY STATE
+=================================== */
 
-@media (max-width: 1200px) {
-  .rentals-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+.rentals-empty {
+  text-align: center;
+  padding: 80px 24px;
+  color: #6c5b52;
 }
 
-@media (max-width: 992px) {
-  .rentals-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+/* ===================================
+   CTA
+=================================== */
+
+.rentals-bottom-cta {
+  max-width: 900px;
+  margin: 100px auto 0;
+  padding: 0 24px;
+  text-align: center;
 }
 
-/* ==========================
+.rentals-bottom-cta h2 {
+  font-size: clamp(2rem,4vw,3.5rem);
+  color: #2f2018;
+  margin-bottom: 16px;
+}
+
+.rentals-bottom-cta p {
+  color: #6c5b52;
+  line-height: 1.9;
+  margin-bottom: 28px;
+}
+
+.rentals-whatsapp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  text-decoration: none;
+
+  background: #25D366;
+  color: white;
+
+  padding: 16px 32px;
+
+  border-radius: 999px;
+
+  font-weight: 700;
+
+  transition: .3s ease;
+}
+
+.rentals-whatsapp-btn:hover {
+  transform: translateY(-3px);
+}
+
+/* ===================================
    MOBILE
-========================== */
+=================================== */
 
 @media (max-width: 768px) {
-  .rentals-section {
-    padding: 40px 16px 60px;
+
+  .rentals-page {
+    padding-top: 30px;
+  }
+
+  .rentals-header h1 {
+    font-size: 2.4rem;
   }
 
   .rentals-grid {
@@ -178,98 +373,79 @@
   }
 
   .rental-image {
-    height: 210px;
-  }
-
-  .rental-content h3 {
-    font-size: 1rem;
+    height: 220px;
   }
 
   .rental-footer {
     flex-direction: column;
-    align-items: stretch;
+    align-items: flex-start;
   }
 
   .rental-btn {
+    width: 100%;
     text-align: center;
   }
 }
-.rental-card {
-  background: #fff;
-  border-radius: 28px;
-  overflow: hidden;
-  border: 1px solid rgba(0,0,0,0.05);
-  box-shadow:
-    0 10px 30px rgba(0,0,0,.06),
-    0 2px 8px rgba(0,0,0,.04);
-}
-.section-header {
-  text-align: center;
-  max-width: 850px;
-  margin: 0 auto 3rem;
+/* ===================================
+   PREMIUM CARD FIXES
+=================================== */
+
+.rental-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
-.section-header h1 {
-  font-size: clamp(2.5rem,5vw,4.5rem);
-  line-height: 1.1;
-}
-.rentals-controls {
-  max-width: 1300px;
-  margin: 0 auto 3rem;
-}
-.rentals-header{
-  max-width:900px;
-  margin:0 auto;
-  padding:70px 24px 40px;
-  text-align:center;
+.rental-content p {
+  min-height: 110px;
 }
 
-.rentals-badge{
-  display:inline-block;
-  background:#f4e4de;
-  color:#c21f1f;
-  padding:8px 18px;
-  border-radius:999px;
-  font-weight:600;
-  margin-bottom:20px;
+.rental-footer {
+  margin-top: auto;
 }
 
-.rentals-header h1{
-  font-size:clamp(2.8rem,5vw,4.5rem);
-  line-height:1.1;
-  margin-bottom:18px;
+.rental-price {
+  display: block;
+  margin-bottom: 18px;
+  font-size: 1.8rem;
+  line-height: 1;
 }
 
-.rentals-header p{
-  max-width:700px;
-  margin:auto;
-  color:#6b5a50;
-  line-height:1.8;
+.rental-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
-.rentals-bottom-cta {
-  max-width: 900px;
-  margin: 80px auto;
-  padding: 50px 30px;
+
+.rental-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
   text-align: center;
 }
 
-.rentals-bottom-cta h2 {
-  font-size: 2.2rem;
-  margin-bottom: 15px;
-}
-
-.rentals-bottom-cta p {
-  color: #6b5a50;
-  line-height: 1.8;
-  margin-bottom: 25px;
-}
-
-.rentals-whatsapp-btn {
-  display: inline-block;
+.rental-btn-primary {
   background: #c21f1f;
-  color: white;
-  text-decoration: none;
-  padding: 14px 28px;
-  border-radius: 999px;
-  font-weight: 600;
+  color: #fff;
+}
+
+.rental-btn-secondary {
+  background: #fff;
+  color: #c21f1f;
+  border: 1px solid rgba(194,31,31,.2);
+}
+
+.rental-image {
+  height: 300px;
+}
+
+@media (max-width: 768px) {
+  .rental-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .rental-content p {
+    min-height: auto;
+  }
 }

@@ -4,8 +4,8 @@ export const flowers = [
     name: "Bloom Red",
     slug: "bloom-red",
     image: "/images/flowers/bloom-red.jpg",
-    price: "From KES 1,900",
-    category: "Bouquet",
+    price: "KES 1,900",
+    category: "Rose Bouquet",
   },
 
   {
@@ -14,7 +14,7 @@ export const flowers = [
     slug: "luxe-bloom",
     image: "/images/flowers/luxe-bloom.jpg",
     price: "KES 8,000",
-    category: "Premium Bouquet",
+    category: "Rose Bouquet",
   },
 
   {
@@ -22,7 +22,7 @@ export const flowers = [
     name: "Rose Delight",
     slug: "rose-delight",
     image: "/images/flowers/rose-delight.jpg",
-    price: "From KES 5,000",
+    price: "KES 5,000",
     category: "Rose Bouquet",
   },
 
@@ -31,7 +31,7 @@ export const flowers = [
     name: "Infinity Roses",
     slug: "infinity-roses",
     image: "/images/flowers/infinity-roses.jpg",
-    price: "From KES 2,500",
+    price: "KES 2,500",
     category: "Rose Bouquet",
   },
 
@@ -40,8 +40,8 @@ export const flowers = [
     name: "Classic & Premium",
     slug: "classic-premium",
     image: "/images/flowers/classic-premiums.jpg",
-    price: "From KES 2,800",
-    category: "Bouquet",
+    price: "KES 2,800",
+    category: "Mixed Flowers Bouquet",
   },
 
   {
@@ -50,7 +50,7 @@ export const flowers = [
     slug: "majestic-bloom",
     image: "/images/flowers/majestic-bloom.jpg",
     price: "KES 4,800",
-    category: "Premium Bouquet",
+    category: "Rose Bouquet",
   },
 
   {
@@ -59,7 +59,7 @@ export const flowers = [
     slug: "crimson-bouquet",
     image: "/images/flowers/crimson-bouquet.jpg",
     price: "KES 4,000",
-    category: "Bouquet",
+    category: "Mixed Flowers Bouquet",
   },
 
   {
@@ -67,8 +67,8 @@ export const flowers = [
     name: "Emerald Bliss",
     slug: "emerald-bliss",
     image: "/images/flowers/emerald-bliss.jpg",
-    price: "From KES 5,800",
-    category: "Premium Bouquet",
+    price: "KES 4,800",
+    category: "Mixed Flowers Bouquet",
   },
 
   {
@@ -76,8 +76,8 @@ export const flowers = [
     name: "Blush Elegance",
     slug: "blush-elegance",
     image: "/images/flowers/blush-elegance.jpg",
-    price: "From KES 2,500",
-    category: "Bouquet",
+    price: "KES 2,500",
+    category: "Mixed Flowers Bouquet",
   },
 
   {
@@ -86,7 +86,7 @@ export const flowers = [
     slug: "blooms-in-harmony",
     image: "/images/flowers/blooms-in-harmony.jpg",
     price: "KES 8,000",
-    category: "Basket Arrangement",
+    category: "Basket Arrangement Bouquet",
   },
 
   {
@@ -94,8 +94,8 @@ export const flowers = [
     name: "Lily Charm",
     slug: "lily-charm",
     image: "/images/flowers/lily-charm.jpg",
-    price: "KES 3,500",
-    category: "Lily Bouquet",
+    price: "KES 4,500",
+    category: "Mixed Flowers Bouquet",
   },
 
   {
@@ -103,7 +103,7 @@ export const flowers = [
     name: "Money Bouquet",
     slug: "money-bouquet",
     image: "/images/flowers/money-bouquet.jpg",
-    price: "Custom Pricing",
+    price: "KES 2000",
     category: "Money Bouquet",
   },
 
@@ -112,8 +112,8 @@ export const flowers = [
     name: "Snack Bouquet",
     slug: "snack-bouquet",
     image: "/images/flowers/snack-bouquet.jpg",
-    price: "Preorder",
-    category: "Gift Bouquet",
+    price: "KES 3,000",
+    category: "Basket Arrangement Bouquet",
   },
 
   {
@@ -121,7 +121,7 @@ export const flowers = [
     name: "Luminous Bliss",
     slug: "luminous-bliss",
     image: "/images/flowers/luminous-bliss.jpg",
-    price: "Contact For Price",
-    category: "Premium Bouquet",
+    price: "KES 3,500",
+    category: "Mixed Flowers Bouquet",
   },
 ];

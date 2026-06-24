@@ -4,12 +4,9 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 const DEFAULT_CATEGORIES = [
-  "Wedding Package",
-  "Birthday Package",
-  "Corporate Package",
-  "Baby Shower Package",
-  "Graduation Package",
-  "Anniversary Package",
+  "Birthday",
+  "Funeral",
+  "Premium",
   "Custom",
 ];
 

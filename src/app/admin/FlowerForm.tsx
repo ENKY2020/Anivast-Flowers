@@ -5,10 +5,9 @@ import { supabase } from "@/lib/supabase";
 
 const FLOWER_CATEGORIES = [
   "Rose Bouquet",
-  "Lily Bouquet",
+  "Mixed Flowers Bouquet",
   "Money Bouquet",
-  "Snack Bouquet",
-  "Luxury Bouquet",
+  "Basket Arrangement Bouquet",
   "Artificial Flowers",
   "Funeral Flowers",
   "Custom",

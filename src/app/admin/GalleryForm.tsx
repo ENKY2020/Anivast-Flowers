@@ -187,33 +187,32 @@ export default function GalleryForm({
           )
         }
       >
-        <option value="Wedding">
-          Wedding
-        </option>
+       <option value="Wedding">Wedding</option>
+<option value="Birthday">Birthday</option>
+<option value="Corporate">Corporate</option>
+<option value="Graduation">Graduation</option>
+<option value="Proposal">Proposal</option>
+<option value="Baby Shower">Baby Shower</option>
 
-        <option value="Birthday">
-          Birthday
-        </option>
+<option value="Rose Bouquet">Rose Bouquet</option>
+<option value="Mixed Flowers Bouquet">Mixed Flowers Bouquet</option>
+<option value="Money Bouquet">Money Bouquet</option>
+<option value="Basket Arrangement Bouquet">Basket Arrangement Bouquet</option>
+<option value="Artificial Flowers">Artificial Flowers</option>
+<option value="Funeral Flowers">Funeral Flowers</option>
 
-        <option value="Corporate">
-          Corporate
-        </option>
+<option value="Birthday">Birthday</option>
+<option value="Funeral">Funeral</option>
+<option value="Premium">Premium</option>
 
-        <option value="Graduation">
-          Graduation
-        </option>
+<option value="Tents">Tents</option>
+<option value="Chairs">Chairs</option>
+<option value="Tables">Tables</option>
+<option value="Backdrops & Decor">Backdrops & Decor</option>
+<option value="Facilities">Facilities</option>
+<option value="Lighting & Effects">Lighting & Effects</option>
 
-        <option value="Proposal">
-          Proposal
-        </option>
-
-        <option value="Baby Shower">
-          Baby Shower
-        </option>
-
-        <option value="Decor">
-          Decor
-        </option>
+<option value="Custom">Custom</option>
       </select>
 
       <input

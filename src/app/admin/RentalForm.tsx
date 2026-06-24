@@ -30,7 +30,7 @@ export default function RentalForm({
 
   const [name, setName] = useState("");
   const [category, setCategory] =
-    useState("Chairs");
+    useState("Tents");
   const [price, setPrice] = useState("");
   const [description, setDescription] =
     useState("");
@@ -235,11 +235,13 @@ export default function RentalForm({
             )
           }
         >
-          <option>Chairs</option>
-          <option>Tables</option>
           <option>Tents</option>
-          <option>Decor</option>
-          <option>Lighting</option>
+<option>Chairs</option>
+<option>Tables</option>
+<option>Backdrops & Decor</option>
+<option>Facilities</option>
+<option>Lighting & Effects</option>
+<option>Custom</option>
         </select>
 
         <input

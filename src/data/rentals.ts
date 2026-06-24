@@ -65,11 +65,11 @@ export const rentals = [
 
   {
     id: 6,
-    name: "White Event Chair",
+    name: " Plastic Dresed Chair",
     slug: "white-event-chair",
     category: "Chairs",
-    description: "Premium white event chairs suitable for weddings and corporate functions.",
-    price: "KES 350",
+    description: "Premium white dressed chairs suitable for weddings and corporate functions.",
+    price: "KES 80",
     image: "/images/rentals/armless-chair-white.jpg",
     featured: false,
     active: true,
@@ -77,7 +77,7 @@ export const rentals = [
 
   {
     id: 7,
-    name: "Chair Setup Package",
+    name: "Corporate Setup Package",
     slug: "chair-setup-package",
     category: "Chairs",
     description: "Professional event seating arrangement package.",
@@ -103,11 +103,11 @@ export const rentals = [
 
   {
     id: 9,
-    name: "Premium Dressed Table",
+    name: "Dressed Round Table",
     slug: "premium-dressed-table",
     category: "Tables",
-    description: "Professionally dressed event table with premium linen setup.",
-    price: "KES 1,500",
+    description: "Professionally round dressed event table with premium linen setup.",
+    price: "KES 1,000",
     image: "/images/rentals/round-table-2.jpg",
     featured: true,
     active: true,
@@ -115,11 +115,11 @@ export const rentals = [
 
   {
     id: 10,
-    name: "Dining Table Setup",
+    name: "Traditional Table Setup",
     slug: "dining-table-setup",
     category: "Tables",
-    description: "Complete banquet and dining arrangement for events.",
-    price: "KES 5,000",
+    description: "Complete banquet and  dining arrangement for events.",
+    price: "KES 20,000",
     image: "/images/rentals/tables.jpg",
     featured: true,
     active: true,

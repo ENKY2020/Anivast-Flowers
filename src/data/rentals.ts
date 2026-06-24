@@ -208,7 +208,7 @@ export const rentals = [
     category: "Facilities",
     description: "Premium VIP mobile toilet facilities for executive and luxury events.",
     price: "KES 25,000",
-    image: "/images/rentals/mobile-toilet.jpg",
+    image: "/images/rentals/vip-mobile-toilet.jpg",
     featured: true,
     active: true,
   },

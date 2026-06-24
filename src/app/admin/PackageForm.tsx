@@ -40,10 +40,10 @@ export default function PackageForm({
     );
 
   const [category, setCategory] =
-    useState(
-      packageData?.category ||
-        "Wedding Package"
-    );
+  useState(
+    packageData?.category ||
+      "Birthday"
+  );
 
   const [
     customCategory,
@@ -195,8 +195,8 @@ export default function PackageForm({
 
       setName("");
       setCategory(
-        "Wedding Package"
-      );
+  "Birthday"
+);
       setCustomCategory("");
       setPrice("");
       setDescription("");

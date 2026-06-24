@@ -219,7 +219,7 @@ Please share more details.`
               }}
             >
               {flower.description ||
-                "Beautiful handcrafted floral arrangement designed to create memorable moments. Perfect for birthdays, anniversaries, graduations, celebrations and special occasions."}
+                "✨ Custom Pricing Available. Each money bouquet is uniquely crafted based on your preferred amount, presentation style and occasion. Perfect for birthdays, graduations, anniversaries, celebrations and special gifts. Contact us for a personalised quotation."}
             </p>
 
             <div

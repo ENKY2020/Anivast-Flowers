@@ -14,7 +14,7 @@ export const packages = [
 
   {
     id: 2,
-    name: "Funeral Package",
+    name: "Basic Package",
     slug: "funeral-package",
     category: "Funeral",
     image: "/images/packages/normal-package.jpg",
@@ -27,9 +27,9 @@ export const packages = [
 
   {
     id: 3,
-    name: "Premium Package",
-    slug: "premium-package",
-    category: "Premium",
+    name: "VIP Package",
+    slug: "funeral-vip-package",
+    category: "Funeral",
     image: "/images/packages/vip-package.jpg",
     price: "KES 20,000",
     description:

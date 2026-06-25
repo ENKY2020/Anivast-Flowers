@@ -12,11 +12,11 @@ export default function Hero() {
         </span>
 
         <h1>
-          We Design
+          Designing
           <br />
-          Moments That
+          Moments 
           <br />
-          Stay Forever
+          Crafting Memories
         </h1>
 
         <p>

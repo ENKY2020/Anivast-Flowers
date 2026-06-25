@@ -79,7 +79,7 @@ export default function Footer() {
 
           <span>✉️ anivasts@gmail.com</span>
 
-          <span>📍 Nairobi, Kenya</span>
+          <span>📍Kamae Garage Centre, Opposite Kenyatta University, Refferal - Nairobi, Kenya</span>
 
           <a
             href="https://wa.me/254703234167"
